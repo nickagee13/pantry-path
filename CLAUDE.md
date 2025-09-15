@@ -5,12 +5,13 @@
 PantryPath is a smart grocery and kitchen inventory management app that helps users track their shopping across multiple stores, manage their home inventory, and get recipe suggestions based on what they have.
 
 **Creator**: Nick Agee (Freelance Audio Engineer exploring app development)
-**Repository**: https://github.com/nickagee13/pantrypath
+**Repository**: https://github.com/nickagee13/pantry-path
 **Current Stage**: MVP HTML complete (v13), ready for React/Vite conversion
 
 ## Core Concept & User Flow
 
 ### Personal Workflow (Nick's Use Case)
+
 1. **Add ingredients to grocery list** (manually or from saved recipes)
 2. **App auto-organizes by store** (Farmers Market, Costco, Whole Foods, etc.)
 3. **Within each store, items auto-sort by sections** (Produce, Dairy, etc.)
@@ -21,6 +22,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 ## Key Features Implemented in MVP
 
 ### Grocery List View
+
 - Multi-store organization with collapsible cards
 - Items auto-sort to bottom when checked
 - "Completed!" badge when all store items are checked
@@ -29,6 +31,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 - Family member attribution ("Added by Sarah")
 
 ### Kitchen Inventory View
+
 - Visual cards with progress bars showing quantity remaining
 - Expiration tracking with color-coded alerts
 - Swipe gestures:
@@ -37,6 +40,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 - Category filtering (Dairy, Fruits, Veggies, Meat, Pantry, Frozen)
 
 ### Recipes View
+
 - Smart suggestions based on current inventory
 - "Can Make: X Recipes" stat shows recipes with all ingredients available
 - Cuisine tags (Italian 🍝, Chinese 🥢, Mexican 🌮, Thai 🌶️, American 🍔)
@@ -46,6 +50,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 - Prioritizes recipes using expiring ingredients
 
 ### Add Items View
+
 - Smart suggestions based on:
   - Frequently bought items
   - Items running low
@@ -54,6 +59,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 - Quantity input (optional)
 
 ### Settings View
+
 - Dark mode toggle
 - Store management (configure default categories)
 - Notification preferences:
@@ -68,25 +74,26 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 
 ```css
 /* Light Mode */
---bg-primary: #F8F9FD;
---bg-secondary: #FFFFFF;
---accent-green: #4CAF50;
---accent-blue: #2196F3;
---accent-purple: #9C27B0;
---accent-yellow: #FFE082;
---accent-pink: #FFD6E8;
---accent-mint: #B2DFDB;
---accent-peach: #FFCCBC;
---success: #10B981;
---warning: #F59E0B;
---danger: #EF4444;
+--bg-primary: #f8f9fd;
+--bg-secondary: #ffffff;
+--accent-green: #4caf50;
+--accent-blue: #2196f3;
+--accent-purple: #9c27b0;
+--accent-yellow: #ffe082;
+--accent-pink: #ffd6e8;
+--accent-mint: #b2dfdb;
+--accent-peach: #ffccbc;
+--success: #10b981;
+--warning: #f59e0b;
+--danger: #ef4444;
 
 /* Dark Mode */
 --bg-primary: #000000;
---bg-secondary: #1C1C1E;
+--bg-secondary: #1c1c1e;
 ```
 
 ### Visual Elements
+
 - Gradient stat cards (yellow, blue, green)
 - Gradient cuisine tags with unique colors
 - Border radius: 12px (sm), 16px (md), 24px (lg)
@@ -96,6 +103,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 ## Technical Implementation Notes
 
 ### State Management Structure
+
 ```javascript
 {
   activeView: 'grocery-view',
@@ -112,6 +120,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 ```
 
 ### Key Interactions to Preserve
+
 1. **Checkbox behavior**: Click to check, auto-sort to bottom, update store badge
 2. **Store card collapse**: Click header to toggle
 3. **Swipe gestures**: Touch handling for inventory cards
@@ -120,6 +129,7 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 6. **View switching**: Bottom nav updates, smooth transitions
 
 ### Component Breakdown
+
 - **GroceryListView**: Contains StoreCard components
 - **StoreCard**: Collapsible container with ListItem children
 - **ListItem**: Checkbox, name, quantity, metadata
@@ -143,25 +153,21 @@ PantryPath is a smart grocery and kitchen inventory management app that helps us
 - Real-time sync across devices
 - Barcode scanning
 - Recipe import from URLs
-- Meal planning calendar
-- Budget tracking
-- Store price comparisons
 - AI-powered recipe suggestions
 
 ## Development Workflow
 
 Following Nick's App Dev Workflow:
 
-1. ✅ Brainstorm basic app ideas
-2. ✅ Build basic UI (HTML)
-3. ✅ **Migrate to Vite/React** (COMPLETED)
-4. ✅ Set up GitHub repo (already created)
-5. ✅ Open in VS Code (using Claude Code)
-6. ✅ Use Claude Code to link repo, commit, push
-7. Create Supabase backend
-8. Connect UI with backend
-9. Deploy to Netlify
-10. UI Polish
+1. ✅ Brainstorm basic app ideas (features, what problems does it solve, naming, UI/UX)
+2. ✅ Build the basic Ul only (dummy data) (HTML)
+3. ✅ Set up new GitHub repo + create Vite Project structure locally
+4. ✅ Link repo, commit and push MVP to Github via Terminal
+5. 🎯 Migrate HTML code over to new Vite project in VS Code (CURRENT)
+6. Create data structure and backend with Supabase
+7. Connect both Ul with backend
+8. Deploy working MVP to Netlify
+9. Ul Polish (Get UI/UX inspiration)
 
 ## Important Context
 
@@ -183,47 +189,13 @@ When implementing in React, ensure every feature, animation, and interaction fro
 
 ## Development Session Notes
 
-### Session 2024-09-14: React Implementation & Design Fix
+**Current State**:
 
-**Initial Issue**: Created React app that didn't match the HTML MVP design at all.
-
-**Problem**: I initially created a React app using generic styling instead of reading the actual HTML MVP file (`pantrypath-mvp-v13.html`). The result was completely different from Nick's carefully crafted design.
-
-**Solution**: Complete redesign to match HTML MVP exactly:
-
-1. **CSS Overhaul**: Replaced entire App.css with the exact CSS variables and styling from HTML MVP including:
-   - Proper color scheme (--bg-primary: #F8F9FD, etc.)
-   - Soft pastel accent colors
-   - Gradient stat cards
-   - Exact border radius, shadows, and transitions
-
-2. **Component Structure**: Updated all components to match HTML structure:
-   - Replaced lucide-react icons with emoji icons (🛒, 👤, 🔍, 📝, etc.)
-   - Updated layout structure with proper container, FAB, and navigation
-   - Exact header with subtitle, search bar, stats cards, filter pills
-
-3. **Data Updates**: Updated mock data to match HTML content exactly
-
-4. **Key Changes**:
-   - GroceryListView: Added proper header with shopping mode toggle, stats cards, filter pills
-   - StoreCard: Added emoji icons for stores, proper badge styling
-   - ListItem: Simplified to match HTML checkbox structure
-   - BottomNav: Updated to use emoji icons and exact structure
-   - Added FAB (Floating Action Button)
-
-**Current State**: ✅ COMPLETED
-- React app now looks identical to HTML MVP v13
-- All visual elements preserved: gradients, shadows, animations
-- Proper mobile-first responsive design maintained
-- Running successfully on localhost:5173
-- All 5 views (Grocery, Inventory, Recipes, Add Item, Settings) now match HTML MVP exactly
-- All components updated with proper emoji icons, styling, and structure
-- Build passes successfully with no errors
-- Ready for next development phase
+- Developing Vite/React app to look identical to HTML MVP v13
 
 **Key Lesson**: Always read and reference the existing HTML file first before implementing React components. The HTML MVP contains all the design decisions and should be the source of truth for the React implementation.
 
-## Native iOS Deployment Strategy
+## Future Native iOS Deployment Strategy
 
 ### End Goal: Capacitor for iOS App Store
 
@@ -245,16 +217,19 @@ When building features, keep these Capacitor considerations in mind:
 ### Capacitor Integration Timeline
 
 **Phase 1: Current (React/Vite MVP)**
-- ✅ Build full-featured web app
-- ✅ Perfect mobile UX/UI
-- ✅ Complete core functionality
+
+- Build full-featured web app
+- Perfect mobile UX/UI
+- Complete core functionality
 
 **Phase 2: Capacitor Setup**
+
 - Add Capacitor to existing project
 - Test iOS build and app store submission process
 - Handle any mobile-specific adjustments
 
 **Phase 3: Native Features**
+
 - Add camera for barcode scanning
 - Implement push notifications
 - Optimize for app store guidelines
@@ -274,4 +249,4 @@ When building features, keep these Capacitor considerations in mind:
 - **Can always rebuild native later if needed**
 - **Leverages existing PantryPath investment**
 
-*This strategy allows for "vibe coding" approach while keeping native iOS deployment as the ultimate goal.*
+_This strategy allows for "vibe coding" approach while keeping native iOS deployment as the ultimate goal._
