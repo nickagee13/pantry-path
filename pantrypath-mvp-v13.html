@@ -1,0 +1,1772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>PantryPath</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        :root {
+            --bg-primary: #F8F9FD;
+            --bg-secondary: #FFFFFF;
+            --bg-card: #FFFFFF;
+            
+            /* Soft pastel accents */
+            --accent-green: #4CAF50;
+            --accent-blue: #2196F3;
+            --accent-purple: #9C27B0;
+            --accent-yellow: #FFE082;
+            --accent-pink: #FFD6E8;
+            --accent-mint: #B2DFDB;
+            --accent-peach: #FFCCBC;
+            
+            --text-primary: #1A1A2E;
+            --text-secondary: #6B7280;
+            --text-tertiary: #9CA3AF;
+            
+            --success: #10B981;
+            --warning: #F59E0B;
+            --danger: #EF4444;
+            
+            --border: #F3F4F6;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.08);
+            --shadow-lg: 0 8px 32px rgba(0,0,0,0.12);
+            
+            --radius-sm: 12px;
+            --radius-md: 16px;
+            --radius-lg: 24px;
+        }
+
+        body.dark-mode {
+            --bg-primary: #000000;
+            --bg-secondary: #1C1C1E;
+            --bg-card: #1C1C1E;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+            --text-tertiary: #636366;
+            --border: #38383A;
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            padding-bottom: 100px;
+            overscroll-behavior-y: contain;
+        }
+
+        .container {
+            max-width: 430px;
+            margin: 0 auto;
+            min-height: 100vh;
+            position: relative;
+        }
+
+        /* Compact Header - 30% screen height target */
+        .header {
+            padding: 10px 20px 0;
+            background: var(--bg-primary);
+        }
+
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+        }
+
+        .header-subtitle {
+            color: var(--text-secondary);
+            font-size: 12px;
+            margin-top: -2px;
+            margin-bottom: 10px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .icon-btn {
+            width: 36px;
+            height: 36px;
+            background: var(--bg-secondary);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.2s;
+            font-size: 16px;
+        }
+
+        .icon-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        /* Compact Search Bar */
+        .search-container {
+            padding: 0 20px 10px;
+        }
+
+        .search-bar {
+            display: flex;
+            align-items: center;
+            background: var(--bg-secondary);
+            border-radius: var(--radius-lg);
+            padding: 10px 14px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+        }
+
+        .search-bar:focus-within {
+            box-shadow: var(--shadow-md);
+            transform: translateY(-1px);
+        }
+
+        .search-icon {
+            color: var(--text-tertiary);
+            margin-right: 10px;
+            font-size: 16px;
+        }
+
+        .search-input {
+            flex: 1;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 15px;
+            outline: none;
+            font-weight: 500;
+        }
+
+        .search-input::placeholder {
+            color: var(--text-tertiary);
+            font-weight: 400;
+        }
+
+        /* Compact Stats Cards */
+        .stats-row {
+            display: flex;
+            gap: 8px;
+            padding: 0 20px 10px;
+        }
+
+        .stat-card {
+            flex: 1;
+            background: linear-gradient(135deg, var(--accent-yellow), #FFD54F);
+            border-radius: var(--radius-sm);
+            padding: 8px 10px;
+            box-shadow: 0 2px 8px rgba(255, 193, 7, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-card.blue {
+            background: linear-gradient(135deg, #64B5F6, #42A5F5);
+            box-shadow: 0 2px 8px rgba(33, 150, 243, 0.15);
+        }
+
+        .stat-card.green {
+            background: linear-gradient(135deg, #81C784, #66BB6A);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.15);
+        }
+
+        .stat-label {
+            font-size: 9px;
+            font-weight: 600;
+            color: rgba(255,255,255,0.85);
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-value {
+            font-size: 18px;
+            font-weight: 800;
+            color: white;
+            line-height: 1;
+        }
+
+        .stat-desc {
+            font-size: 10px;
+            color: rgba(255,255,255,0.85);
+        }
+
+        .stat-icon {
+            position: absolute;
+            right: 8px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 20px;
+            opacity: 0.25;
+        }
+
+        /* Store/Category Filter Pills */
+        .filter-section {
+            padding: 0 20px 12px;
+        }
+
+        .filter-pills {
+            display: flex;
+            gap: 8px;
+            overflow-x: auto;
+            scrollbar-width: none;
+        }
+
+        .filter-pills::-webkit-scrollbar {
+            display: none;
+        }
+
+        .filter-pill {
+            padding: 8px 14px;
+            background: var(--bg-secondary);
+            border: 1.5px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .filter-pill.active {
+            background: var(--text-primary);
+            color: var(--bg-secondary);
+            border-color: var(--text-primary);
+        }
+
+        body.dark-mode .filter-pill.active {
+            background: var(--accent-blue);
+            color: white;
+            border-color: var(--accent-blue);
+        }
+
+        .filter-pill:hover {
+            transform: translateY(-1px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* List Cards */
+        .list-container {
+            padding: 0 20px 20px;
+        }
+
+        .store-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+        .store-card:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .store-header {
+            padding: 14px 18px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .store-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .store-badge {
+            background: var(--accent-peach);
+            color: var(--text-primary);
+            padding: 2px 10px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .store-badge.completed {
+            background: var(--success);
+            color: white;
+        }
+
+        .store-chevron {
+            font-size: 20px;
+            color: var(--text-tertiary);
+            transition: transform 0.2s;
+        }
+
+        .store-card.collapsed .store-chevron {
+            transform: rotate(-90deg);
+        }
+
+        .store-content {
+            max-height: 500px;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .store-content.collapsed {
+            max-height: 0;
+        }
+
+        .list-item {
+            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s;
+            cursor: pointer;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-item:last-child {
+            border-bottom: none;
+        }
+
+        .list-item:hover {
+            background: var(--bg-primary);
+        }
+
+        .list-item:active {
+            transform: scale(0.98);
+        }
+
+        .checkbox {
+            width: 22px;
+            height: 22px;
+            border: 2.5px solid #E5E7EB;
+            border-radius: 7px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            flex-shrink: 0;
+            font-size: 13px;
+            font-weight: bold;
+            color: white;
+        }
+
+        .checkbox.checked {
+            background: var(--success);
+            border-color: var(--success);
+        }
+
+        .item-content {
+            flex: 1;
+        }
+
+        .item-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 1px;
+        }
+
+        .item-meta {
+            font-size: 12px;
+            color: var(--text-tertiary);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .list-item.checked .item-name {
+            text-decoration: line-through;
+            color: var(--text-tertiary);
+        }
+
+        /* Inventory Cards with Swipe */
+        .inventory-grid {
+            padding: 12px 20px;
+            display: grid;
+            gap: 12px;
+        }
+
+        .inventory-card {
+            border-radius: var(--radius-md);
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .inventory-content {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s, opacity 0.3s;
+        }
+
+        .inventory-card.expiring .inventory-content {
+            background: linear-gradient(135deg, #FFE0B2, #FFCC80);
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 10px;
+        }
+
+        .inventory-name {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .inventory-emoji {
+            font-size: 28px;
+        }
+
+        .inventory-details {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .detail-pill {
+            padding: 3px 10px;
+            background: rgba(255,255,255,0.8);
+            border-radius: 10px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .inventory-progress {
+            margin-top: 12px;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background: rgba(0,0,0,0.1);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: var(--success);
+            border-radius: 3px;
+            transition: width 0.3s;
+        }
+
+        .progress-label {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+            font-weight: 600;
+        }
+
+        /* Recipe Cards */
+        .recipe-grid {
+            padding: 0 20px;
+        }
+
+        .recipe-section {
+            margin-bottom: 24px;
+        }
+
+        .section-title {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            padding: 0 4px;
+        }
+
+        .recipe-card {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            padding: 16px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow-sm);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .recipe-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--accent-green), var(--accent-blue));
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .recipe-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 8px;
+        }
+
+        .recipe-title {
+            font-size: 17px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .recipe-badge {
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 700;
+            background: var(--accent-mint);
+            color: var(--text-primary);
+        }
+
+        .recipe-badge.missing {
+            background: var(--accent-peach);
+        }
+
+        .recipe-info {
+            display: flex;
+            gap: 16px;
+            color: var(--text-secondary);
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        /* New: Cuisine Tags */
+        .recipe-tags {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+        }
+
+        .cuisine-tag {
+            padding: 4px 10px;
+            background: var(--bg-primary);
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-secondary);
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .cuisine-tag.italian {
+            background: linear-gradient(135deg, #FFE0E0, #FFCDD2);
+            color: #C62828;
+        }
+
+        .cuisine-tag.chinese {
+            background: linear-gradient(135deg, #FFE0B2, #FFCC80);
+            color: #E65100;
+        }
+
+        .cuisine-tag.mexican {
+            background: linear-gradient(135deg, #C8E6C9, #A5D6A7);
+            color: #2E7D32;
+        }
+
+        .cuisine-tag.american {
+            background: linear-gradient(135deg, #E1F5FE, #B3E5FC);
+            color: #0277BD;
+        }
+
+        .cuisine-tag.thai {
+            background: linear-gradient(135deg, #F3E5F5, #E1BEE7);
+            color: #6A1B9A;
+        }
+
+        .cuisine-tag.quick {
+            background: linear-gradient(135deg, #FFF9C4, #FFF59D);
+            color: #F57C00;
+        }
+
+        .recipe-ingredients {
+            font-size: 13px;
+            color: var(--text-tertiary);
+        }
+
+        /* Settings Sections */
+        .settings-container {
+            padding: 20px;
+        }
+
+        .settings-section {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-md);
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .settings-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--text-primary);
+        }
+
+        .settings-item {
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .settings-item:last-child {
+            border-bottom: none;
+        }
+
+        .toggle-switch {
+            width: 51px;
+            height: 31px;
+            background: #E5E7EB;
+            border-radius: 16px;
+            position: relative;
+            transition: background 0.3s;
+            cursor: pointer;
+        }
+
+        .toggle-switch.active {
+            background: var(--success);
+        }
+
+        .toggle-knob {
+            width: 27px;
+            height: 27px;
+            background: white;
+            border-radius: 50%;
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active .toggle-knob {
+            transform: translateX(20px);
+        }
+
+        /* Add Item Form */
+        .add-container {
+            padding: 20px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-label {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: block;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 14px;
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 500;
+            color: var(--text-primary);
+            transition: all 0.2s;
+        }
+
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent-blue);
+            box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
+        }
+
+        .suggestions-box {
+            background: var(--bg-secondary);
+            border-radius: var(--radius-sm);
+            padding: 12px;
+            margin-top: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .suggestion-item {
+            padding: 12px;
+            border-radius: var(--radius-sm);
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .suggestion-item:hover {
+            background: var(--bg-primary);
+        }
+
+        .suggestion-text {
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .suggestion-hint {
+            font-size: 12px;
+            color: var(--text-tertiary);
+        }
+
+        /* Primary Button */
+        .btn-primary {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, var(--text-primary), #2D3748);
+            color: white;
+            border: none;
+            border-radius: var(--radius-sm);
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .btn-primary:active {
+            transform: translateY(0);
+        }
+
+        /* Bottom Navigation */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: var(--bg-secondary);
+            border-top: 1px solid var(--border);
+            box-shadow: 0 -4px 16px rgba(0,0,0,0.08);
+        }
+
+        .nav-container {
+            max-width: 430px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-around;
+            padding: 12px 0 24px;
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+            padding: 8px 16px;
+            cursor: pointer;
+            color: var(--text-tertiary);
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .nav-item.active {
+            color: var(--text-primary);
+        }
+
+        .nav-item.active::before {
+            content: '';
+            position: absolute;
+            top: -12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 32px;
+            height: 3px;
+            background: var(--text-primary);
+            border-radius: 2px;
+        }
+
+        .nav-icon {
+            font-size: 22px;
+        }
+
+        .nav-label {
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        /* FAB */
+        .fab {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 56px;
+            height: 56px;
+            background: linear-gradient(135deg, var(--accent-blue), #1976D2);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+            cursor: pointer;
+            transition: all 0.3s;
+            z-index: 100;
+        }
+
+        .fab:hover {
+            transform: scale(1.1) rotate(90deg);
+        }
+
+        .fab:active {
+            transform: scale(0.9);
+        }
+
+        /* View transitions */
+        .view {
+            display: none;
+            animation: slideUp 0.3s ease;
+        }
+
+        .view.active {
+            display: block;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Grocery List View -->
+        <div class="view active" id="grocery-view">
+            <div class="header">
+                <div class="header-top">
+                    <div>
+                        <h1>Grocery List</h1>
+                        <div class="header-subtitle">6 items • 4 stores • 1 completed</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn" onclick="toggleShoppingMode()" title="Shopping Mode">🛒</button>
+                        <button class="icon-btn">👤</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="search-container">
+                <div class="search-bar">
+                    <span class="search-icon">🔍</span>
+                    <input type="text" class="search-input" placeholder="Search items..." onkeyup="searchItems(this.value)">
+                </div>
+            </div>
+
+            <div class="stats-row">
+                <div class="stat-card">
+                    <div class="stat-label">List</div>
+                    <div class="stat-value">6</div>
+                    <div class="stat-desc">To buy</div>
+                    <span class="stat-icon">📝</span>
+                </div>
+                <div class="stat-card blue">
+                    <div class="stat-label">Expiring</div>
+                    <div class="stat-value">3</div>
+                    <div class="stat-desc">Use soon</div>
+                    <span class="stat-icon">⏰</span>
+                </div>
+                <div class="stat-card green">
+                    <div class="stat-label">Can Make</div>
+                    <div class="stat-value">5</div>
+                    <div class="stat-desc">Recipes</div>
+                    <span class="stat-icon">🍳</span>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-pills">
+                    <div class="filter-pill active">All Stores</div>
+                    <div class="filter-pill">Farmers Market</div>
+                    <div class="filter-pill">Costco</div>
+                    <div class="filter-pill">Whole Foods</div>
+                    <div class="filter-pill">Trader Joe's</div>
+                </div>
+            </div>
+
+            <div class="list-container">
+                <div class="store-card">
+                    <div class="store-header" onclick="toggleCard(this)">
+                        <div class="store-title">
+                            <span>🥬</span>
+                            Farmers Market
+                            <span class="store-badge">3 items</span>
+                        </div>
+                        <span class="store-chevron">⌄</span>
+                    </div>
+                    <div class="store-content">
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Bell Peppers</div>
+                                <div class="item-meta">
+                                    <span>3 count</span>
+                                    <span>•</span>
+                                    <span>Added by Sarah</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Organic Tomatoes</div>
+                                <div class="item-meta">
+                                    <span>2 lbs</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Fresh Basil</div>
+                                <div class="item-meta">
+                                    <span>1 bunch</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card">
+                    <div class="store-header" onclick="toggleCard(this)">
+                        <div class="store-title">
+                            <span>📦</span>
+                            Costco
+                            <span class="store-badge">2 items</span>
+                        </div>
+                        <span class="store-chevron">⌄</span>
+                    </div>
+                    <div class="store-content">
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Chicken Breast</div>
+                                <div class="item-meta">
+                                    <span>Family pack</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Eggs</div>
+                                <div class="item-meta">
+                                    <span>24 pack</span>
+                                    <span>•</span>
+                                    <span>Running low</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card">
+                    <div class="store-header" onclick="toggleCard(this)">
+                        <div class="store-title">
+                            <span>🍃</span>
+                            Whole Foods
+                            <span class="store-badge" style="background: var(--success); color: white;">Completed!</span>
+                        </div>
+                        <span class="store-chevron">⌄</span>
+                    </div>
+                    <div class="store-content">
+                        <div class="list-item checked" onclick="toggleCheck(this)">
+                            <div class="checkbox checked">✓</div>
+                            <div class="item-content">
+                                <div class="item-name">Oat Milk</div>
+                                <div class="item-meta">
+                                    <span>1 carton</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="list-item checked" onclick="toggleCheck(this)">
+                            <div class="checkbox checked">✓</div>
+                            <div class="item-content">
+                                <div class="item-name">Sourdough Bread</div>
+                                <div class="item-meta">
+                                    <span>1 loaf</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="store-card">
+                    <div class="store-header" onclick="toggleCard(this)">
+                        <div class="store-title">
+                            <span>🏪</span>
+                            Trader Joe's
+                            <span class="store-badge">1 item</span>
+                        </div>
+                        <span class="store-chevron">⌄</span>
+                    </div>
+                    <div class="store-content">
+                        <div class="list-item" onclick="toggleCheck(this)">
+                            <div class="checkbox"></div>
+                            <div class="item-content">
+                                <div class="item-name">Everything Bagel Seasoning</div>
+                                <div class="item-meta">
+                                    <span>1 bottle</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Kitchen Inventory View -->
+        <div class="view" id="inventory-view">
+            <div class="header">
+                <div class="header-top">
+                    <div>
+                        <h1>Kitchen Inventory</h1>
+                        <div class="header-subtitle">Swipe ← remove • Swipe → add to list</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn">📊</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="filter-section">
+                <div class="filter-pills">
+                    <div class="filter-pill active">All</div>
+                    <div class="filter-pill">Dairy</div>
+                    <div class="filter-pill">Fruits</div>
+                    <div class="filter-pill">Veggies</div>
+                    <div class="filter-pill">Meat</div>
+                    <div class="filter-pill">Pantry</div>
+                    <div class="filter-pill">Frozen</div>
+                </div>
+            </div>
+
+            <div class="inventory-grid">
+                <div class="inventory-card" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+                    <div class="inventory-content">
+                        <div class="inventory-header">
+                            <div>
+                                <div class="inventory-name">Chicken Breast</div>
+                                <div class="inventory-details">
+                                    <span class="detail-pill">Fresh</span>
+                                    <span class="detail-pill">2 lbs</span>
+                                    <span class="detail-pill">5 days left</span>
+                                </div>
+                            </div>
+                            <div class="inventory-emoji">🍗</div>
+                        </div>
+                        <div class="inventory-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 80%;"></div>
+                            </div>
+                            <div class="progress-label">80% remaining</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card expiring" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+                    <div class="inventory-content">
+                        <div class="inventory-header">
+                            <div>
+                                <div class="inventory-name">Bell Peppers</div>
+                                <div class="inventory-details">
+                                    <span class="detail-pill">⚠️ Use Soon</span>
+                                    <span class="detail-pill">2 left</span>
+                                    <span class="detail-pill">2 days</span>
+                                </div>
+                            </div>
+                            <div class="inventory-emoji">🫑</div>
+                        </div>
+                        <div class="inventory-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 30%; background: var(--warning);"></div>
+                            </div>
+                            <div class="progress-label" style="color: var(--warning);">Running low - add to list?</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+                    <div class="inventory-content">
+                        <div class="inventory-header">
+                            <div>
+                                <div class="inventory-name">Oat Milk</div>
+                                <div class="inventory-details">
+                                    <span class="detail-pill">Dairy</span>
+                                    <span class="detail-pill">Half gallon</span>
+                                </div>
+                            </div>
+                            <div class="inventory-emoji">🥛</div>
+                        </div>
+                        <div class="inventory-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 60%;"></div>
+                            </div>
+                            <div class="progress-label">60% remaining</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="inventory-card" ontouchstart="handleTouchStart(event)" ontouchend="handleTouchEnd(event)">
+                    <div class="inventory-content">
+                        <div class="inventory-header">
+                            <div>
+                                <div class="inventory-name">Pasta</div>
+                                <div class="inventory-details">
+                                    <span class="detail-pill">Pantry</span>
+                                    <span class="detail-pill">3 boxes</span>
+                                </div>
+                            </div>
+                            <div class="inventory-emoji">🍝</div>
+                        </div>
+                        <div class="inventory-progress">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 100%;"></div>
+                            </div>
+                            <div class="progress-label">Fully stocked</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recipes View -->
+        <div class="view" id="recipes-view">
+            <div class="header">
+                <div class="header-top">
+                    <div>
+                        <h1>Recipes</h1>
+                        <div class="header-subtitle">Based on your inventory</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn">✨</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="filter-section">
+                <div class="filter-pills">
+                    <div class="filter-pill active">All</div>
+                    <div class="filter-pill">Favorites</div>
+                    <div class="filter-pill">Expiring Items</div>
+                    <div class="filter-pill">Quick Meals</div>
+                    <div class="filter-pill">Healthy</div>
+                    <div class="filter-pill">Comfort Food</div>
+                    <div class="filter-pill">Italian</div>
+                    <div class="filter-pill">Chinese</div>
+                    <div class="filter-pill">Mexican</div>
+                </div>
+            </div>
+
+            <div class="recipe-grid">
+                <div class="recipe-section">
+                    <div class="section-title">🔥 Use Soon - Expiring Items</div>
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Chicken Stir Fry</div>
+                            <div class="recipe-badge">Ready</div>
+                        </div>
+                        <div class="recipe-tags">
+                            <span class="cuisine-tag chinese">🥢 Chinese</span>
+                            <span class="cuisine-tag quick">⚡ Quick</span>
+                        </div>
+                        <div class="recipe-info">
+                            <span>⏱ 25 min</span>
+                            <span>👨‍🍳 Easy</span>
+                            <span>🍽 4 servings</span>
+                        </div>
+                        <div class="recipe-ingredients">
+                            Uses: Chicken, bell peppers, onions
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Stuffed Peppers</div>
+                            <div class="recipe-badge missing">1 Missing</div>
+                        </div>
+                        <div class="recipe-tags">
+                            <span class="cuisine-tag american">🍔 American</span>
+                            <span class="cuisine-tag">🥗 Healthy</span>
+                        </div>
+                        <div class="recipe-info">
+                            <span>⏱ 45 min</span>
+                            <span>👨‍🍳 Medium</span>
+                            <span>🍽 6 servings</span>
+                        </div>
+                        <div class="recipe-ingredients">
+                            Missing: Ground beef • Uses: Bell peppers, rice
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-section">
+                    <div class="section-title">✨ Quick Meals</div>
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Pasta Carbonara</div>
+                            <div class="recipe-badge">Ready</div>
+                        </div>
+                        <div class="recipe-tags">
+                            <span class="cuisine-tag italian">🍝 Italian</span>
+                            <span class="cuisine-tag quick">⚡ Quick</span>
+                        </div>
+                        <div class="recipe-info">
+                            <span>⏱ 20 min</span>
+                            <span>👨‍🍳 Easy</span>
+                            <span>🍽 4 servings</span>
+                        </div>
+                        <div class="recipe-ingredients">
+                            Uses: Pasta, eggs, bacon, parmesan
+                        </div>
+                    </div>
+
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Chicken Tacos</div>
+                            <div class="recipe-badge missing">2 Missing</div>
+                        </div>
+                        <div class="recipe-tags">
+                            <span class="cuisine-tag mexican">🌮 Mexican</span>
+                            <span class="cuisine-tag quick">⚡ Quick</span>
+                        </div>
+                        <div class="recipe-info">
+                            <span>⏱ 30 min</span>
+                            <span>👨‍🍳 Easy</span>
+                            <span>🍽 4 servings</span>
+                        </div>
+                        <div class="recipe-ingredients">
+                            Missing: Tortillas, salsa • Uses: Chicken, peppers
+                        </div>
+                    </div>
+                </div>
+
+                <div class="recipe-section">
+                    <div class="section-title">🌟 Favorites</div>
+                    <div class="recipe-card">
+                        <div class="recipe-header">
+                            <div class="recipe-title">Pad Thai</div>
+                            <div class="recipe-badge missing">3 Missing</div>
+                        </div>
+                        <div class="recipe-tags">
+                            <span class="cuisine-tag thai">🌶️ Thai</span>
+                            <span class="cuisine-tag">⭐ Favorite</span>
+                        </div>
+                        <div class="recipe-info">
+                            <span>⏱ 35 min</span>
+                            <span>👨‍🍳 Medium</span>
+                            <span>🍽 4 servings</span>
+                        </div>
+                        <div class="recipe-ingredients">
+                            Missing: Rice noodles, tamarind, peanuts
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Add View -->
+        <div class="view" id="add-view">
+            <div class="header">
+                <div class="header-top">
+                    <div>
+                        <h1>Add Items</h1>
+                        <div class="header-subtitle">What do you need?</div>
+                    </div>
+                    <div class="header-actions">
+                        <button class="icon-btn">📷</button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="add-container">
+                <div class="input-group">
+                    <label class="input-label">Item Name</label>
+                    <input type="text" class="input-field" placeholder="Start typing..." id="item-input" onkeyup="showItemSuggestions(this.value)">
+                    
+                    <div class="suggestions-box" id="item-suggestions" style="display: none;">
+                        <div class="suggestion-item" onclick="selectItem('Milk')">
+                            <span class="suggestion-text">🥛 Milk</span>
+                            <span class="suggestion-hint">Running low</span>
+                        </div>
+                        <div class="suggestion-item" onclick="selectItem('Bread')">
+                            <span class="suggestion-text">🍞 Bread</span>
+                            <span class="suggestion-hint">Frequently bought</span>
+                        </div>
+                        <div class="suggestion-item" onclick="selectItem('Eggs')">
+                            <span class="suggestion-text">🥚 Eggs</span>
+                            <span class="suggestion-hint">Last bought 2 weeks ago</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Quantity</label>
+                    <input type="text" class="input-field" placeholder="How much? (optional)">
+                </div>
+
+                <div class="input-group">
+                    <label class="input-label">Store</label>
+                    <input type="text" class="input-field" placeholder="Select or type store..." id="store-input" 
+                           onfocus="showStoreSuggestions()" 
+                           onkeyup="filterStores(this.value)"
+                           onblur="hideStoreSuggestions()">
+                    
+                    <div class="suggestions-box" id="store-suggestions" style="display: none;">
+                        <div style="font-size: 11px; color: var(--text-tertiary); text-transform: uppercase; padding: 8px 12px 4px;">Your Stores</div>
+                        <div class="suggestion-item" onclick="selectStore('Farmers Market')">
+                            <span class="suggestion-text">🥬 Farmers Market</span>
+                            <span class="suggestion-hint">Produce default</span>
+                        </div>
+                        <div class="suggestion-item" onclick="selectStore('Costco')">
+                            <span class="suggestion-text">📦 Costco</span>
+                            <span class="suggestion-hint">Bulk items</span>
+                        </div>
+                        <div class="suggestion-item" onclick="selectStore('Whole Foods')">
+                            <span class="suggestion-text">🍃 Whole Foods</span>
+                            <span class="suggestion-hint">Organic</span>
+                        </div>
+                        <div class="suggestion-item" onclick="selectStore('Trader Joe\'s')">
+                            <span class="suggestion-text">🏪 Trader Joe's</span>
+                            <span class="suggestion-hint">Specialty</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="btn-primary">Add to List</button>
+            </div>
+        </div>
+
+        <!-- Settings View -->
+        <div class="view" id="settings-view">
+            <div class="header">
+                <div class="header-top">
+                    <div>
+                        <h1>Settings</h1>
+                        <div class="header-subtitle">Customize your experience</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="settings-container">
+                <!-- Appearance Settings -->
+                <div class="settings-section">
+                    <div class="settings-header">Appearance</div>
+                    <div class="settings-item" onclick="toggleTheme()" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 16px; font-weight: 600;">Dark Mode</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">Easier on the eyes at night</div>
+                        </div>
+                        <div class="toggle-switch" id="theme-toggle">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Store Management -->
+                <div class="settings-section">
+                    <div class="settings-header">Your Stores</div>
+                    <div class="settings-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 16px;">🥬 Farmers Market</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Produce, Herbs</span>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 16px;">📦 Costco</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Bulk, Meat</span>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 16px;">🍃 Whole Foods</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Organic, Dairy</span>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <span style="font-size: 16px;">🏪 Trader Joe's</span>
+                            <span style="font-size: 13px; color: var(--text-secondary);">Snacks, Specialty</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Notifications -->
+                <div class="settings-section">
+                    <div class="settings-header">Notifications</div>
+                    <div class="settings-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 16px; font-weight: 600;">Expiration Alerts</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">2 days before items expire</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                    <div class="settings-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 16px; font-weight: 600;">Low Stock Alerts</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">When items drop below 25%</div>
+                        </div>
+                        <div class="toggle-switch active" onclick="toggleSwitch(this)">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                    <div class="settings-item" style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <div style="font-size: 16px; font-weight: 600;">Recipe Suggestions</div>
+                            <div style="font-size: 13px; color: var(--text-secondary); margin-top: 2px;">Daily meal ideas</div>
+                        </div>
+                        <div class="toggle-switch" onclick="toggleSwitch(this)">
+                            <div class="toggle-knob"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Family Sharing -->
+                <div class="settings-section">
+                    <div class="settings-header">Family Sharing</div>
+                    <div class="settings-item">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <div style="width: 36px; height: 36px; background: linear-gradient(135deg, #FF6B6B, #FF8E53); border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-weight: 700;">S</div>
+                                <div>
+                                    <div style="font-size: 16px; font-weight: 600;">Sarah</div>
+                                    <div style="font-size: 13px; color: var(--text-secondary);">Can edit</div>
+                                </div>
+                            </div>
+                            <span style="font-size: 13px; color: var(--success);">Active</span>
+                        </div>
+                    </div>
+                    <div class="settings-item">
+                        <div style="text-align: center;">
+                            <button style="background: none; border: none; color: var(--accent-blue); font-size: 16px; font-weight: 600; cursor: pointer;">+ Invite Family Member</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- FAB -->
+        <div class="fab" onclick="switchView('add-view')">+</div>
+
+        <!-- Bottom Navigation -->
+        <div class="bottom-nav">
+            <div class="nav-container">
+                <div class="nav-item active" onclick="switchView('grocery-view')">
+                    <span class="nav-icon">📝</span>
+                    <span class="nav-label">Lists</span>
+                </div>
+                <div class="nav-item" onclick="switchView('inventory-view')">
+                    <span class="nav-icon">🏠</span>
+                    <span class="nav-label">Kitchen</span>
+                </div>
+                <div class="nav-item" onclick="switchView('recipes-view')">
+                    <span class="nav-icon">🍳</span>
+                    <span class="nav-label">Recipes</span>
+                </div>
+                <div class="nav-item" onclick="switchView('settings-view')">
+                    <span class="nav-icon">⚙️</span>
+                    <span class="nav-label">Settings</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize checked items on load
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize shopping mode button
+            const shoppingBtn = document.querySelector('[onclick="toggleShoppingMode()"]');
+            if (shoppingBtn) {
+                shoppingBtn.style.background = 'var(--bg-secondary)';
+            }
+
+            // Initialize any pre-checked items
+            document.querySelectorAll('.checkbox.checked').forEach(checkbox => {
+                if (!checkbox.textContent) {
+                    checkbox.textContent = '✓';
+                }
+            });
+        });
+
+        // View switching
+        function switchView(viewId) {
+            document.querySelectorAll('.view').forEach(view => {
+                view.classList.remove('active');
+            });
+            document.getElementById(viewId).classList.add('active');
+            
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            const viewToNav = {
+                'grocery-view': 0,
+                'inventory-view': 1,
+                'recipes-view': 2,
+                'settings-view': 3
+            };
+            
+            if (viewToNav[viewId] !== undefined) {
+                document.querySelectorAll('.nav-item')[viewToNav[viewId]].classList.add('active');
+            }
+        }
+
+        // Toggle store card collapse
+        function toggleCard(header) {
+            const card = header.parentElement;
+            card.classList.toggle('collapsed');
+            const content = header.nextElementSibling;
+            content.classList.toggle('collapsed');
+        }
+
+        // Toggle checkbox
+        function toggleCheck(item) {
+            const checkbox = item.querySelector('.checkbox');
+            checkbox.classList.toggle('checked');
+            item.classList.toggle('checked');
+            
+            // Update checkmark
+            if (checkbox.classList.contains('checked')) {
+                checkbox.textContent = '✓';
+            } else {
+                checkbox.textContent = '';
+            }
+            
+            // Move checked items to bottom
+            const storeContent = item.parentElement;
+            if (checkbox.classList.contains('checked')) {
+                item.style.animation = 'slideUp 0.3s ease';
+                // Move to end of list
+                setTimeout(() => {
+                    storeContent.appendChild(item);
+                }, 300);
+            } else {
+                // Move unchecked items back to top
+                const firstChecked = storeContent.querySelector('.list-item.checked');
+                if (firstChecked) {
+                    storeContent.insertBefore(item, firstChecked);
+                }
+            }
+            
+            // Check if all items in this store are completed
+            const storeCard = storeContent.parentElement;
+            const allItems = storeCard.querySelectorAll('.list-item');
+            const checkedItems = storeCard.querySelectorAll('.list-item.checked');
+            const storeBadge = storeCard.querySelector('.store-badge');
+            
+            if (allItems.length > 0 && allItems.length === checkedItems.length) {
+                // All items checked - show completed
+                storeBadge.textContent = 'Completed!';
+                storeBadge.style.background = 'var(--success)';
+                storeBadge.style.color = 'white';
+            } else {
+                // Show item count
+                const uncheckedCount = allItems.length - checkedItems.length;
+                storeBadge.textContent = uncheckedCount + (uncheckedCount === 1 ? ' item' : ' items');
+                storeBadge.style.background = 'var(--accent-peach)';
+                storeBadge.style.color = 'var(--text-primary)';
+            }
+        }
+
+        // Search items
+        function searchItems(query) {
+            const items = document.querySelectorAll('.list-item');
+            items.forEach(item => {
+                const text = item.querySelector('.item-name').textContent.toLowerCase();
+                if (text.includes(query.toLowerCase())) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        }
+
+        // Show item suggestions
+        function showItemSuggestions(value) {
+            const suggestions = document.getElementById('item-suggestions');
+            if (value.length > 0) {
+                suggestions.style.display = 'block';
+            } else {
+                suggestions.style.display = 'none';
+            }
+        }
+
+        // Select item suggestion
+        function selectItem(item) {
+            document.getElementById('item-input').value = item;
+            document.getElementById('item-suggestions').style.display = 'none';
+        }
+
+        // Show store suggestions
+        function showStoreSuggestions() {
+            setTimeout(() => {
+                document.getElementById('store-suggestions').style.display = 'block';
+            }, 100);
+        }
+
+        // Hide store suggestions
+        function hideStoreSuggestions() {
+            setTimeout(() => {
+                document.getElementById('store-suggestions').style.display = 'none';
+            }, 200);
+        }
+
+        // Filter stores based on input
+        function filterStores(value) {
+            const suggestions = document.getElementById('store-suggestions');
+            if (value.length > 0) {
+                suggestions.style.display = 'block';
+            }
+        }
+
+        // Select store
+        function selectStore(store) {
+            document.getElementById('store-input').value = store;
+            document.getElementById('store-suggestions').style.display = 'none';
+        }
+
+        // Toggle Shopping Mode
+        function toggleShoppingMode() {
+            const isActive = document.body.classList.toggle('shopping-mode');
+            const btn = event.currentTarget;
+            
+            if (isActive) {
+                btn.style.background = 'var(--success)';
+                btn.style.color = 'white';
+                // Hide search and stats in shopping mode
+                document.querySelector('.search-container').style.display = 'none';
+                document.querySelector('.stats-row').style.display = 'none';
+            } else {
+                btn.style.background = 'var(--bg-secondary)';
+                btn.style.color = 'var(--text-primary)';
+                // Show search and stats again
+                document.querySelector('.search-container').style.display = 'block';
+                document.querySelector('.stats-row').style.display = 'flex';
+            }
+        }
+
+        // Toggle theme
+        function toggleTheme() {
+            document.body.classList.toggle('dark-mode');
+            const toggle = document.getElementById('theme-toggle');
+            
+            if (document.body.classList.contains('dark-mode')) {
+                toggle.classList.add('active');
+            } else {
+                toggle.classList.remove('active');
+            }
+        }
+
+        // Toggle switch
+        function toggleSwitch(toggle) {
+            toggle.classList.toggle('active');
+        }
+
+        // Swipe handling for inventory items
+        let touchStartX = 0;
+        let touchEndX = 0;
+        let currentCard = null;
+
+        function handleTouchStart(e) {
+            touchStartX = e.changedTouches[0].screenX;
+            currentCard = e.currentTarget;
+        }
+
+        function handleTouchEnd(e) {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }
+
+        function handleSwipe() {
+            if (!currentCard) return;
+            
+            const swipeDistance = touchStartX - touchEndX;
+            const content = currentCard.querySelector('.inventory-content');
+            
+            if (Math.abs(swipeDistance) < 50) {
+                // Reset if swipe is too small
+                content.style.transform = 'translateX(0)';
+                return;
+            }
+            
+            if (swipeDistance > 50) {
+                // Swipe left - remove from inventory
+                content.style.transform = 'translateX(-100%)';
+                content.style.opacity = '0';
+                setTimeout(() => {
+                    currentCard.style.display = 'none';
+                    console.log('Item removed from inventory');
+                }, 300);
+            } else if (swipeDistance < -50) {
+                // Swipe right - add to grocery list
+                content.style.transform = 'translateX(100%)';
+                content.style.opacity = '0';
+                setTimeout(() => {
+                    content.style.transform = 'translateX(0)';
+                    content.style.opacity = '1';
+                    alert('Item added to grocery list!');
+                }, 300);
+            }
+        }
+    </script>
+</body>
+</html>
