@@ -9,6 +9,7 @@ import { categories } from '../../data/mockData';
 const InventoryView = ({ inventory, onRemoveItem, onAddToList, onUpdateItem, onShowNotification }) => {
   const [activeFilter, setActiveFilter] = useState('All');
   const [locationFilter, setLocationFilter] = useState('All');
+  const [statusFilter, setStatusFilter] = useState('All');
   const [editModalOpen, setEditModalOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -26,11 +27,22 @@ const InventoryView = ({ inventory, onRemoveItem, onAddToList, onUpdateItem, onS
   };
 
   const locationFilters = ['All', 'Fridge', 'Pantry', 'Freezer', 'Counter'];
+  const statusFilters = ['All', 'Running Low', 'Expiring', 'Fresh'];
 
   const filteredInventory = inventory.filter(item => {
     const categoryMatch = activeFilter === 'All' || item.category === activeFilter;
     const locationMatch = locationFilter === 'All' || item.location === locationFilter;
-    return categoryMatch && locationMatch;
+
+    let statusMatch = true;
+    if (statusFilter === 'Running Low') {
+      statusMatch = item.percentage <= 25;
+    } else if (statusFilter === 'Expiring') {
+      statusMatch = item.daysLeft <= 2;
+    } else if (statusFilter === 'Fresh') {
+      statusMatch = item.percentage > 50 && item.daysLeft > 7;
+    }
+
+    return categoryMatch && locationMatch && statusMatch;
   });
 
   const headerActions = (
@@ -57,6 +69,12 @@ const InventoryView = ({ inventory, onRemoveItem, onAddToList, onUpdateItem, onS
         filters={locationFilters}
         activeFilter={locationFilter}
         onFilterChange={setLocationFilter}
+      />
+
+      <FilterPills
+        filters={statusFilters}
+        activeFilter={statusFilter}
+        onFilterChange={setStatusFilter}
       />
 
       <div className="inventory-grid">

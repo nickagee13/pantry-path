@@ -88,18 +88,30 @@ const InventoryCard = ({ item, onRemoveItem, onAddToList, onEditItem, onShowNoti
       cardRef.current.style.opacity = '0';
       setTimeout(() => {
         onAddToList(item);
+
+        // If item is at 0% or below, remove it from inventory
+        const shouldRemoveFromInventory = item.percentage <= 0;
+
         if (onShowNotification) {
           const undoAction = () => {
             // Remove the item from grocery list - this would need proper implementation
             window.location.reload(); // Temporary solution
           };
-          onShowNotification(`${item.name} added to grocery list`, 'added', undoAction);
+          const message = shouldRemoveFromInventory
+            ? `${item.name} added to grocery list and removed from inventory (empty)`
+            : `${item.name} added to grocery list`;
+          onShowNotification(message, 'added', undoAction);
         }
-        resetCard();
-        // Show a temporary feedback message
-        if (cardRef.current) {
-          cardRef.current.style.transform = 'translateX(0)';
-          cardRef.current.style.opacity = '1';
+
+        if (shouldRemoveFromInventory) {
+          onRemoveItem(item.id);
+        } else {
+          resetCard();
+          // Show a temporary feedback message
+          if (cardRef.current) {
+            cardRef.current.style.transform = 'translateX(0)';
+            cardRef.current.style.opacity = '1';
+          }
         }
       }, 300);
     }

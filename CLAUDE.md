@@ -189,7 +189,36 @@ When implementing in React, ensure every feature, animation, and interaction fro
 
 ## Development Session Notes
 
-### Session 2024-09-16: UI/UX Fixes & Feature Enhancements
+### Session 2024-09-16 (Part 2): Kitchen Inventory Enhancements & UX Polish
+
+**Second Continuation Session**: Additional improvements and refinements based on user feedback
+
+**Issues Addressed:**
+1. **Status Filter Pills**: Added third row of filter pills to Kitchen Inventory for "Running Low", "Expiring", and "Fresh" items
+2. **Empty Item Auto-Removal**: Items at 0% are now automatically removed from inventory when swiped to grocery list
+3. **FAB Size Increase**: Made the floating action button (+ icon) bigger for better touch interaction
+4. **Notification Width Fix**: Expanded notification width to feel more natural on mobile devices
+5. **Recipe Back Arrow**: Fixed visibility issues with back arrow in recipe detail modal
+
+**Technical Implementation:**
+- Enhanced InventoryView with statusFilter state and complex filtering logic
+- Updated InventoryCard swipe logic to handle empty items automatically
+- Increased FAB dimensions from 56px to 64px with larger icon (28px)
+- Improved notification responsive design with calc(100% - 40px) max-width
+- Removed absolute positioning from recipe modal close button for better visibility
+
+**Current State**: ✅ COMPLETED
+- Kitchen Inventory now has comprehensive filtering (category + location + status)
+- Better mobile UX with larger touch targets and wider notifications
+- Automatic cleanup of empty inventory items
+- All navigation elements properly visible
+
+**Key Files Modified:**
+- `/src/components/views/InventoryView.jsx` - Added status filtering with Running Low/Expiring/Fresh logic
+- `/src/components/inventory/InventoryCard.jsx` - Auto-removal of 0% items when adding to grocery list
+- `/src/App.css` - Increased FAB size, fixed notification width, improved back arrow positioning
+
+### Session 2024-09-16 (Part 1): UI/UX Fixes & Feature Enhancements
 
 **Continuation Session**: Fixed remaining issues from previous session and added new functionality
 
