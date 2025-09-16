@@ -807,6 +807,21 @@ body.dark-mode .filter-pill.active {
   transform: translateX(20px);
 }
 
+/* Store reordering styles */
+.store-item {
+  transition: all 0.2s ease;
+}
+
+.store-item.dragging {
+  opacity: 0.5;
+  transform: rotate(2deg);
+}
+
+.store-item.drag-over {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
 /* Add Item Form */
 .add-container {
   padding: 20px;

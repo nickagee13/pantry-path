@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { Camera } from 'lucide-react';
+import { Camera, ArrowLeft } from 'lucide-react';
 import Header from '../common/Header';
 import { itemSuggestions, storeSuggestions } from '../../data/mockData';
 
-const AddItemView = ({ onAddItem }) => {
+const AddItemView = ({ onAddItem, onNavigateBack }) => {
   const [itemName, setItemName] = useState('');
   const [quantity, setQuantity] = useState('');
   const [store, setStore] = useState('');
@@ -56,9 +56,14 @@ const AddItemView = ({ onAddItem }) => {
   };
 
   const headerActions = (
-    <button className="icon-btn">
-      <Camera size={16} />
-    </button>
+    <div style={{ display: 'flex', gap: '8px' }}>
+      <button className="icon-btn" onClick={onNavigateBack}>
+        <ArrowLeft size={16} />
+      </button>
+      <button className="icon-btn">
+        <Camera size={16} />
+      </button>
+    </div>
   );
 
   return (

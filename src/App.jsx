@@ -215,7 +215,10 @@ function App() {
       )}
 
       {activeView === VIEWS.ADD && (
-        <AddItemView onAddItem={addNewItem} />
+        <AddItemView
+          onAddItem={addNewItem}
+          onNavigateBack={() => setActiveView(VIEWS.GROCERY)}
+        />
       )}
 
       {activeView === VIEWS.SETTINGS && (
