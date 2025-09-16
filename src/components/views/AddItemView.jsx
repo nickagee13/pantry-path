@@ -10,6 +10,23 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
   const [showItemSuggestions, setShowItemSuggestions] = useState(false);
   const [showStoreSuggestions, setShowStoreSuggestions] = useState(false);
 
+  // Filter suggestions based on input
+  const getFilteredItemSuggestions = () => {
+    if (!itemName.trim()) return itemSuggestions;
+    const query = itemName.toLowerCase().trim();
+    return itemSuggestions.filter(item =>
+      item.name.toLowerCase().includes(query)
+    );
+  };
+
+  const getFilteredStoreSuggestions = () => {
+    if (!store.trim()) return storeSuggestions;
+    const query = store.toLowerCase().trim();
+    return storeSuggestions.filter(storeItem =>
+      storeItem.name.toLowerCase().includes(query)
+    );
+  };
+
   const handleItemInputChange = (e) => {
     const value = e.target.value;
     setItemName(value);
@@ -19,6 +36,7 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
   const handleStoreInputChange = (e) => {
     const value = e.target.value;
     setStore(value);
+    setShowStoreSuggestions(true); // Show suggestions when typing
   };
 
   const handleStoreFocus = () => {
@@ -78,18 +96,37 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
         <div className="quick-suggestions">
           <h3 className="suggestions-title">Quick Add</h3>
           <div className="quick-items">
-            {itemSuggestions.map((item, index) => (
-              <button
-                key={index}
-                type="button"
-                className="quick-item-btn"
-                onClick={() => selectItem(item)}
-              >
-                <span className="quick-item-emoji">{item.emoji}</span>
-                <span className="quick-item-name">{item.name}</span>
-                <span className="quick-item-hint">{item.hint}</span>
-              </button>
-            ))}
+            {getFilteredItemSuggestions().length > 0 ? (
+              getFilteredItemSuggestions().map((item, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className="quick-item-btn"
+                  onClick={() => selectItem(item)}
+                >
+                  <span className="quick-item-emoji">{item.emoji}</span>
+                  <span className="quick-item-name">{item.name}</span>
+                  <span className="quick-item-hint">{item.hint}</span>
+                </button>
+              ))
+            ) : itemName.trim() ? (
+              <div className="quick-no-results">
+                <span>No items match "{itemName}"</span>
+              </div>
+            ) : (
+              getFilteredItemSuggestions().map((item, index) => (
+                <button
+                  key={index}
+                  type="button"
+                  className="quick-item-btn"
+                  onClick={() => selectItem(item)}
+                >
+                  <span className="quick-item-emoji">{item.emoji}</span>
+                  <span className="quick-item-name">{item.name}</span>
+                  <span className="quick-item-hint">{item.hint}</span>
+                </button>
+              ))
+            )}
           </div>
         </div>
 
@@ -110,7 +147,7 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
 
             {showItemSuggestions && (
               <div className="suggestions-box">
-                {itemSuggestions.map((item, index) => (
+                {getFilteredItemSuggestions().map((item, index) => (
                   <div
                     key={index}
                     className="suggestion-item"
@@ -122,6 +159,11 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
                     <span className="suggestion-hint">{item.hint}</span>
                   </div>
                 ))}
+                {getFilteredItemSuggestions().length === 0 && (
+                  <div className="suggestion-item no-results">
+                    <span className="suggestion-text">No matching items found</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
@@ -159,7 +201,7 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
                 }}>
                   Your Stores
                 </div>
-                {storeSuggestions.map((storeItem, index) => (
+                {getFilteredStoreSuggestions().map((storeItem, index) => (
                   <div
                     key={index}
                     className="suggestion-item"
@@ -179,6 +221,11 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
                     <span className="suggestion-hint">{storeItem.hint}</span>
                   </div>
                 ))}
+                {getFilteredStoreSuggestions().length === 0 && (
+                  <div className="suggestion-item no-results">
+                    <span className="suggestion-text">No matching stores found</span>
+                  </div>
+                )}
               </div>
             )}
           </div>
