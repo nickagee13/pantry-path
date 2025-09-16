@@ -2,6 +2,7 @@ import { useState } from 'react';
 import Header from '../common/Header';
 import { NOTIFICATION_SETTINGS, FAMILY_MEMBERS, STORE_CATEGORIES } from '../../utils/constants';
 import { storeIcons } from '../../data/mockData';
+import { useAuth } from '../../contexts/AuthContext';
 
 const ToggleSwitch = ({ active, onToggle }) => (
   <div
@@ -13,6 +14,7 @@ const ToggleSwitch = ({ active, onToggle }) => (
 );
 
 const SettingsView = ({ darkMode, onToggleDarkMode, storeOrder, onReorderStores }) => {
+  const { user, signOut } = useAuth();
   const [notifications, setNotifications] = useState(
     NOTIFICATION_SETTINGS.reduce((acc, setting) => {
       acc[setting.id] = setting.active;
@@ -21,6 +23,29 @@ const SettingsView = ({ darkMode, onToggleDarkMode, storeOrder, onReorderStores 
   );
   const [draggedStore, setDraggedStore] = useState(null);
   const [dragOverStore, setDragOverStore] = useState(null);
+
+  // Create current user data for family sharing section
+  const getCurrentUserData = () => {
+    if (!user) return null;
+
+    const fullName = user.user_metadata?.full_name || user.email?.split('@')[0] || 'User';
+    const firstName = fullName.split(' ')[0];
+    const initial = firstName.charAt(0).toUpperCase();
+
+    return {
+      id: user.id,
+      name: firstName,
+      initial: initial,
+      gradient: 'linear-gradient(135deg, #4CAF50, #66BB6A)',
+      permissions: 'Owner',
+      status: 'Active'
+    };
+  };
+
+  const currentUser = getCurrentUserData();
+
+  // Family members - show current user only for now
+  const familyMembers = currentUser ? [currentUser] : [];
 
   const toggleNotification = (id) => {
     setNotifications(prev => ({
@@ -164,7 +189,7 @@ const SettingsView = ({ darkMode, onToggleDarkMode, storeOrder, onReorderStores 
         {/* Family Sharing */}
         <div className="settings-section">
           <div className="settings-header">Family Sharing</div>
-          {FAMILY_MEMBERS.map((member) => (
+          {familyMembers.map((member) => (
             <div key={member.id} className="settings-item">
               <div style={{
                 display: 'flex',
@@ -217,6 +242,30 @@ const SettingsView = ({ darkMode, onToggleDarkMode, storeOrder, onReorderStores 
                 cursor: 'pointer'
               }}>
                 + Invite Family Member
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Sign Out */}
+        <div className="settings-section" style={{ marginTop: '24px' }}>
+          <div className="settings-item">
+            <div style={{ textAlign: 'center' }}>
+              <button
+                onClick={signOut}
+                style={{
+                  background: 'var(--danger)',
+                  border: 'none',
+                  color: 'white',
+                  fontSize: '16px',
+                  fontWeight: 600,
+                  cursor: 'pointer',
+                  padding: '12px 24px',
+                  borderRadius: '12px',
+                  width: '100%'
+                }}
+              >
+                Sign Out
               </button>
             </div>
           </div>
