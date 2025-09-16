@@ -5,6 +5,9 @@ const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || 'demo-key'
 
 if (!import.meta.env.VITE_SUPABASE_URL || !import.meta.env.VITE_SUPABASE_ANON_KEY) {
   console.warn('Missing Supabase environment variables. App will run in demo mode with mock data.')
+} else {
+  console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL)
+  console.log('Supabase Key (first 20 chars):', import.meta.env.VITE_SUPABASE_ANON_KEY?.substring(0, 20) + '...')
 }
 
 // Create a dummy client for demo mode, or real client if env vars exist

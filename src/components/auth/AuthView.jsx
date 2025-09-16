@@ -26,7 +26,8 @@ const AuthView = () => {
         await signIn({ email, password })
       }
     } catch (err) {
-      setError(err.message)
+      console.error('Auth error:', err)
+      setError(err.message || 'Authentication failed')
     } finally {
       setLoading(false)
     }
@@ -46,7 +47,8 @@ const AuthView = () => {
       await resetPassword(email)
       setMessage('Check your email for the password reset link!')
     } catch (err) {
-      setError(err.message)
+      console.error('Auth error:', err)
+      setError(err.message || 'Authentication failed')
     } finally {
       setLoading(false)
     }
