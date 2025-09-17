@@ -49,6 +49,23 @@ body.dark-mode {
   --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
 }
 
+/* Dark mode overrides for stat cards */
+body.dark-mode .stat-label {
+  color: rgba(0,0,0,0.8) !important;
+}
+
+body.dark-mode .stat-value {
+  color: rgba(0,0,0,0.9) !important;
+}
+
+body.dark-mode .stat-desc {
+  color: rgba(0,0,0,0.7) !important;
+}
+
+body.dark-mode .stat-icon {
+  opacity: 0.8;
+}
+
 body {
   font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif;
   background: var(--bg-primary);
@@ -74,7 +91,6 @@ body {
   box-shadow: var(--shadow-lg);
   padding: 32px;
   width: 100%;
-  max-width: 400px;
   text-align: center;
 }
 
@@ -198,13 +214,15 @@ body {
 }
 
 .container {
-  max-width: 430px;
-  width: 100%;
-  margin: 0 auto;
-  min-height: 100vh;
-  position: relative;
-  padding: 0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 80px; /* Leave space for bottom nav */
+  background: var(--bg-primary);
+  overflow-y: auto;
   overflow-x: hidden;
+  padding: 0;
 }
 
 /* Compact Header - 30% screen height target */
@@ -252,6 +270,23 @@ body {
   box-shadow: var(--shadow-sm);
   transition: all 0.2s;
   font-size: 16px;
+  color: var(--text-primary);
+}
+
+.icon-btn svg {
+  color: var(--text-primary) !important;
+  stroke: var(--text-primary) !important;
+  fill: none !important;
+}
+
+body.dark-mode .icon-btn {
+  color: var(--text-primary);
+}
+
+body.dark-mode .icon-btn svg {
+  color: var(--text-primary) !important;
+  stroke: var(--text-primary) !important;
+  fill: none !important;
 }
 
 .icon-btn:hover {
@@ -535,6 +570,34 @@ body.dark-mode .filter-pill.active {
   box-shadow: var(--shadow-sm);
   overflow: hidden;
   transition: all 0.3s;
+  position: relative;
+}
+
+/* Store color indicators */
+.store-card::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: var(--accent-blue);
+}
+
+.store-card[data-store="Farmers Market"]::before {
+  background: var(--accent-green);
+}
+
+.store-card[data-store="Costco"]::before {
+  background: var(--accent-blue);
+}
+
+.store-card[data-store="Whole Foods"]::before {
+  background: var(--accent-purple);
+}
+
+.store-card[data-store="Trader Joe's"]::before {
+  background: var(--accent-peach);
 }
 
 .store-card:hover {
@@ -968,8 +1031,6 @@ body.dark-mode .filter-pill.active {
 /* Add Item Form */
 .add-container {
   padding: 20px;
-  max-width: 400px;
-  margin: 0 auto;
 }
 
 .quick-suggestions {
@@ -1098,6 +1159,20 @@ body.dark-mode .filter-pill.active {
   box-shadow: 0 0 0 4px rgba(33, 150, 243, 0.1);
 }
 
+.quantity-input-container {
+  display: flex;
+  gap: 8px;
+}
+
+.quantity-amount {
+  flex: 2;
+}
+
+.quantity-unit {
+  flex: 1;
+  cursor: pointer;
+}
+
 .suggestions-box {
   background: var(--bg-secondary);
   border-radius: var(--radius-sm);
@@ -1189,8 +1264,6 @@ body.dark-mode .filter-pill.active {
 }
 
 .nav-container {
-  max-width: 430px;
-  margin: 0 auto;
   display: flex;
   justify-content: space-around;
   padding: 12px 0 24px;
@@ -1248,19 +1321,18 @@ body.dark-mode .filter-pill.active {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
+  font-size: 40px;
   box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
   cursor: pointer;
   transition: all 0.3s;
   border: none;
-  aspect-ratio: 1;
+  aspect-ratio: 1/1;
   z-index: 100;
-  border: none;
 }
 
 .fab-icon {
   color: white;
-  font-size: 36px;
+  font-size: 40px;
   font-weight: 200;
   line-height: 1;
   display: flex;
@@ -1338,8 +1410,7 @@ body.shopping-mode .stats-row {
 .modal-content {
   background: var(--bg-secondary);
   border-radius: var(--radius-md);
-  max-width: 400px;
-  width: 100%;
+  width: calc(100% - 40px);
   max-height: 80vh;
   overflow-y: auto;
   box-shadow: var(--shadow-lg);

@@ -19,7 +19,11 @@ import Notification from './components/common/Notification';
 const AuthenticatedApp = () => {
   const [activeView, setActiveView] = useState(VIEWS.GROCERY);
   const [shoppingMode, setShoppingMode] = useState(false);
-  const [darkMode, setDarkMode] = useState(false);
+  const [darkMode, setDarkMode] = useState(() => {
+    // Load dark mode preference from localStorage
+    const saved = localStorage.getItem('pantrypath-dark-mode');
+    return saved ? JSON.parse(saved) : false;
+  });
 
   // Real Supabase data
   const { groceryList, addGroceryItem, updateGroceryItem, deleteGroceryItem, loading: groceryLoading } = useGroceryList();
@@ -49,6 +53,12 @@ const AuthenticatedApp = () => {
       document.body.classList.remove('shopping-mode');
     }
   }, [shoppingMode]);
+
+  const toggleDarkMode = () => {
+    const newDarkMode = !darkMode;
+    setDarkMode(newDarkMode);
+    localStorage.setItem('pantrypath-dark-mode', JSON.stringify(newDarkMode));
+  };
 
   const toggleItemCheck = async (storeKey, itemId) => {
     // Find the item in our current grocery list
@@ -309,7 +319,7 @@ const AuthenticatedApp = () => {
       {activeView === VIEWS.SETTINGS && (
         <SettingsView
           darkMode={darkMode}
-          onToggleDarkMode={() => setDarkMode(!darkMode)}
+          onToggleDarkMode={toggleDarkMode}
           storeOrder={storeOrder}
           onReorderStores={handleReorderStores}
         />

@@ -23,7 +23,7 @@ const StoreCard = ({ storeName, items, onToggleCheck }) => {
   const sortedItems = [...uncheckedItems, ...checkedItems];
 
   return (
-    <div className={`store-card ${collapsed ? 'collapsed' : ''}`}>
+    <div className={`store-card ${collapsed ? 'collapsed' : ''}`} data-store={storeName}>
       <div className="store-header" onClick={() => setCollapsed(!collapsed)}>
         <div className="store-title">
           {storeName === 'Farmers Market' ? (

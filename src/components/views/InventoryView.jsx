@@ -35,11 +35,11 @@ const InventoryView = ({ inventory, onRemoveItem, onAddToList, onUpdateItem, onS
 
     let statusMatch = true;
     if (statusFilter === 'Running Low') {
-      statusMatch = item.percentage <= 25;
+      statusMatch = item.quantity <= 1;
     } else if (statusFilter === 'Expiring') {
-      statusMatch = item.daysLeft <= 2;
+      statusMatch = item.percentage < 50;
     } else if (statusFilter === 'Fresh') {
-      statusMatch = item.percentage > 50 && item.daysLeft > 7;
+      statusMatch = item.percentage >= 50;
     }
 
     return categoryMatch && locationMatch && statusMatch;

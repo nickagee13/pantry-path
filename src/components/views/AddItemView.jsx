@@ -5,10 +5,29 @@ import { itemSuggestions, storeSuggestions } from '../../data/mockData';
 
 const AddItemView = ({ onAddItem, onNavigateBack }) => {
   const [itemName, setItemName] = useState('');
-  const [quantity, setQuantity] = useState('');
+  const [quantityAmount, setQuantityAmount] = useState('');
+  const [quantityUnit, setQuantityUnit] = useState('count');
   const [store, setStore] = useState('');
   const [showItemSuggestions, setShowItemSuggestions] = useState(false);
   const [showStoreSuggestions, setShowStoreSuggestions] = useState(false);
+
+  const quantityUnits = [
+    { value: 'count', label: 'count' },
+    { value: 'oz', label: 'oz' },
+    { value: 'lbs', label: 'lbs' },
+    { value: 'grams', label: 'grams' },
+    { value: 'kg', label: 'kg' },
+    { value: 'cups', label: 'cups' },
+    { value: 'pints', label: 'pints' },
+    { value: 'quarts', label: 'quarts' },
+    { value: 'gallons', label: 'gallons' },
+    { value: 'liters', label: 'liters' },
+    { value: 'ml', label: 'ml' },
+    { value: 'boxes', label: 'boxes' },
+    { value: 'bags', label: 'bags' },
+    { value: 'bunches', label: 'bunches' },
+    { value: 'packages', label: 'packages' }
+  ];
 
   // Filter suggestions based on input
   const getFilteredItemSuggestions = () => {
@@ -61,15 +80,20 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
     e.preventDefault();
     if (!itemName.trim()) return;
 
+    const quantity = quantityAmount.trim()
+      ? `${quantityAmount.trim()} ${quantityUnit}`
+      : '1 count';
+
     onAddItem({
       name: itemName.trim(),
-      quantity: quantity.trim() || '1',
+      quantity: quantity,
       store: store.trim() || 'Farmers Market'
     });
 
     // Reset form
     setItemName('');
-    setQuantity('');
+    setQuantityAmount('');
+    setQuantityUnit('count');
     setStore('');
   };
 
@@ -170,13 +194,28 @@ const AddItemView = ({ onAddItem, onNavigateBack }) => {
 
           <div className="input-group">
             <label className="input-label">Quantity</label>
-            <input
-              type="text"
-              className="input-field"
-              placeholder="How much? (optional)"
-              value={quantity}
-              onChange={(e) => setQuantity(e.target.value)}
-            />
+            <div className="quantity-input-container">
+              <input
+                type="number"
+                className="input-field quantity-amount"
+                placeholder="Amount"
+                value={quantityAmount}
+                onChange={(e) => setQuantityAmount(e.target.value)}
+                min="0"
+                step="0.1"
+              />
+              <select
+                className="input-field quantity-unit"
+                value={quantityUnit}
+                onChange={(e) => setQuantityUnit(e.target.value)}
+              >
+                {quantityUnits.map(unit => (
+                  <option key={unit.value} value={unit.value}>
+                    {unit.label}
+                  </option>
+                ))}
+              </select>
+            </div>
           </div>
 
           <div className="input-group">
